@@ -1,0 +1,21 @@
+# Build stage
+
+FROM golang:1.16 as build
+
+WORKDIR /build
+
+COPY . .
+
+RUN GOOS=linux go build -o cmd
+
+# Run stage
+
+FROM alpine:latest
+
+WORKDIR /app
+
+COPY --from=build /build/cmd .
+
+RUN chmod 777 /app/cmd
+
+CMD ["/app/cmd"]
